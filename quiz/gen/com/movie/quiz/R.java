@@ -250,26 +250,34 @@ public final class R {
         public static final int correct_2=0x7f020001;
         public static final int correct_3=0x7f020002;
         public static final int correct_4=0x7f020003;
-        public static final int ic_action_search=0x7f020004;
-        public static final int ic_launcher=0x7f020005;
-        public static final int next=0x7f020006;
-        public static final int play_button=0x7f020007;
-        public static final int stop_button=0x7f020008;
-        public static final int tainies=0x7f020009;
+        public static final int gm_mn=0x7f020004;
+        public static final int hero_soundtrack=0x7f020005;
+        public static final int ic_action_search=0x7f020006;
+        public static final int ic_launcher=0x7f020007;
+        public static final int lock=0x7f020008;
+        public static final int menu_2=0x7f020009;
+        public static final int next=0x7f02000a;
+        public static final int play_button=0x7f02000b;
+        public static final int stop_button=0x7f02000c;
+        public static final int tainies=0x7f02000d;
+        public static final int unlock=0x7f02000e;
     }
     public static final class id {
+        public static final int hint_button=0x7f080004;
+        public static final int hinttext=0x7f080005;
         public static final int input_text=0x7f080003;
-        public static final int linear=0x7f080005;
-        public static final int linearhome=0x7f080007;
-        public static final int menu_settings=0x7f08000b;
-        public static final int moviesButton=0x7f080008;
+        public static final int linear=0x7f080008;
+        public static final int linearhome=0x7f08000a;
+        public static final int menu_settings=0x7f08000e;
+        public static final int moviesButton=0x7f08000b;
         public static final int next_button=0x7f080000;
         public static final int play_sound_button=0x7f080001;
         public static final int preview_stage=0x7f080002;
-        public static final int relative=0x7f080006;
-        public static final int reset_button=0x7f08000a;
-        public static final int scrollView=0x7f080004;
-        public static final int usless_txt=0x7f080009;
+        public static final int relative=0x7f080009;
+        public static final int reset_button=0x7f08000d;
+        public static final int scrollView=0x7f080007;
+        public static final int textView1=0x7f080006;
+        public static final int usless_txt=0x7f08000c;
     }
     public static final class layout {
         public static final int activity_enigma=0x7f030000;

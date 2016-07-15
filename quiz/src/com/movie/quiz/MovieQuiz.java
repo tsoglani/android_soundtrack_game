@@ -1,5 +1,6 @@
 package com.movie.quiz;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.app.Activity;
@@ -7,6 +8,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,9 +26,30 @@ public class MovieQuiz extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		database = new Database(this);
-
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		addMainMenu();
+		
+		
+	
+		
+		
 	}
+		
+		
+		private void testSound(String txt){
+			AssetFileDescriptor afd;
+			
+			try {
+				afd = getAssets().openFd( txt);
+
+				MediaPlayer	player = new MediaPlayer();
+				player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(),
+						afd.getLength());
+				player.prepare();
+				player.start();}catch(Exception e){
+					e.printStackTrace();
+				}
+		}
 
 	/**
  * 
@@ -44,7 +68,7 @@ public class MovieQuiz extends Activity {
 		setContentView(R.layout.activity_movie_quiz);
 		Button movieButton = (Button) this.findViewById(R.id.moviesButton);
 		Button resetButton = (Button) this.findViewById(R.id.reset_button);
-		mainMenuIconPreferences(movieButton, R.drawable.tainies);
+		mainMenuIconPreferences(movieButton, R.drawable.gm_mn);
 		movieButton.setOnClickListener(goToGameMenuListener);
 		if (database.getCorrectCount() == 0) {
 			resetButton.setEnabled(false);
@@ -109,7 +133,7 @@ public class MovieQuiz extends Activity {
 		 * 
 		 */
 	private boolean reset() {
-		database.removeAll();
+		database.removeAll2();
 		return (database.getCorrectCount() == 0);
 	}
 
@@ -135,8 +159,10 @@ public class MovieQuiz extends Activity {
 		alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-
+			
+				System.runFinalization();
 				System.exit(0);
+				
 			}
 
 		});

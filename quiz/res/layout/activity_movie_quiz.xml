@@ -13,10 +13,10 @@
 
         <Button
             android:id="@+id/moviesButton"
-            android:layout_width="276dp"
-            android:layout_height="158dp"
-            android:layout_weight="0.45"
-            android:text="Enter Soundtrack Quiz" />
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_weight="0.74"
+            android:text="Press to Enter into Soundtrack Quiz" />
 
     </LinearLayout>
 
@@ -29,12 +29,11 @@
         <EditText
             android:id="@+id/usless_txt"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.06"
+            android:layout_height="98dp"
             android:editable="false"
             android:ems="10"
             android:gravity="center_vertical|fill_vertical|center_horizontal"
-            android:text="FIND THE MOVIE'S SOUDTRACK " >
+            android:text="Welcome to the Soundtrack Game" >
 
             <requestFocus />
         </EditText>

@@ -18,12 +18,11 @@
         android:layout_width="250dp"
         android:layout_height="150dp"
         android:layout_below="@+id/next_button"
+        android:layout_marginLeft="79dp"
         android:layout_marginRight="9dp"
-         android:layout_marginLeft="79dp"
         android:layout_marginTop="71dp"
         android:layout_toLeftOf="@+id/next_button"
-        android:gravity="bottom"
-         />
+        android:gravity="bottom" />
 
     <TextView
         android:id="@+id/preview_stage"
@@ -46,5 +45,32 @@
 
         <requestFocus />
     </EditText>
+
+    <Button
+        android:id="@+id/hint_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/input_text"
+        android:layout_marginBottom="17dp"
+        android:layout_toRightOf="@+id/play_sound_button"
+        android:text="use hint" />
+
+    <TextView
+        android:id="@+id/hinttext"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/hint_button"
+        android:layout_toRightOf="@+id/preview_stage"
+        android:text="15"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/hint_button"
+        android:text="remaining hints"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

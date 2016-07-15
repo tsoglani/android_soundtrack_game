@@ -1,7 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.movie.quiz"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="4"
+    android:versionName="1.3" >
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-feature android:name="android.hardware.screen.portrait" />
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -13,7 +17,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MovieQuiz"
-            android:label="@string/title_activity_movie_quiz" >
+            android:label="@string/title_activity_movie_quiz"
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,48 +28,33 @@
         </activity>
         <activity
             android:name=".MainGameMenuActivity"
-            android:label="@string/title_activity_game_menu" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/title_activity_game_menu"
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".EnigmaGameMenuActivity"
-            android:label="@string/title_activity_game" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/title_activity_game"
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".EnigmaActivity"
-            android:label="@string/title_activity_enigma" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/title_activity_enigma"
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/title_activity_main"
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".EnigmaAct"
-            android:label="@string/title_activity_enigma" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/title_activity_enigma"
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

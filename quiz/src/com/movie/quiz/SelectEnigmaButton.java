@@ -75,7 +75,7 @@ public class SelectEnigmaButton extends Button {
 
 		if (hasFound()) {
 			
-			paint.setColor(Color.BLUE);
+			paint.setColor(getResources().getColor(R.color.GreenYellow));
 			 //paint.setTextSize(getHeight()/2);
 			//canvas.drawText("Found", getWidth()/2+getWidth()/5,getHeight()/2, paint);
 			canvas.drawRect(new Rect(0, 0,getWidth(),getHeight()-5),paint);
@@ -149,7 +149,7 @@ public class SelectEnigmaButton extends Button {
 	}
 	public boolean useNext2(){
 		for(int i=1;i<10;i++){
-			if(SelectDifficultyButton.foundCorrect<15*i&&number>=19*i){
+			if(SelectDifficultyButton.foundCorrect<EnigmaAct.correctMustHaveInEachDifficulty*i&&number>=19*i){
 				return false;
 			}
 		}

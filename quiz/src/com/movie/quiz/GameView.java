@@ -55,8 +55,8 @@ public class GameView extends ViewGroup {
 		for (int i = 0; i < childCount; i++) {
 			if (getChildAt(i) instanceof SelectDifficultyButton) {
 				SelectDifficultyButton btn = (SelectDifficultyButton) getChildAt(i);
-				btn.layout(0, i * getHeight() / 6, getWidth(), i * getHeight()
-						/ 6 + 100);
+				btn.layout(0, i * getHeight() / 6+getHeight()/40, getWidth(), i * getHeight()
+						/ 6 + getHeight()/6+getHeight()/55);
 
 			}
 		}

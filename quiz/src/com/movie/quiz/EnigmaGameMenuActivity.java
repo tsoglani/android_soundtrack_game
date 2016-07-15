@@ -32,6 +32,7 @@ public class EnigmaGameMenuActivity extends Activity {
 	public static ArrayList<SelectEnigmaButton> listlevel_2= new ArrayList<SelectEnigmaButton>();
 	public static ArrayList<SelectEnigmaButton> listlevel_3= new ArrayList<SelectEnigmaButton>();
 	public static ArrayList<SelectEnigmaButton> listlevel_4= new ArrayList<SelectEnigmaButton>();
+	public static ArrayList<SelectEnigmaButton> currentCompleteLevel= new ArrayList<SelectEnigmaButton>();
 	// public static String str;
 	/**
  * 
@@ -112,6 +113,11 @@ public class EnigmaGameMenuActivity extends Activity {
 	 */
 	private void createSelectQuizButtons() {
 		listButtons.removeAll(listButtons);
+		listlevel_0.removeAll(listlevel_0);
+		listlevel_1.removeAll(listlevel_1);
+		listlevel_2.removeAll(listlevel_2);
+		listlevel_3.removeAll(listlevel_3);
+		listlevel_4.removeAll(listlevel_4);
 		for (int i = 0; i < totalLevels; i++) {
 			SelectEnigmaButton b = new SelectEnigmaButton(this);
 			b.setText("movie " + Integer.toString(i + 1));
@@ -154,10 +160,17 @@ public class EnigmaGameMenuActivity extends Activity {
 		removeFindQuizFromArrayLists(listlevel_2);
 		removeFindQuizFromArrayLists(listlevel_3);
 		removeFindQuizFromArrayLists(listlevel_4);
-		for(int j=0; j<10;j++){
-			Log.e(Integer.toString(EnigmaGameMenuActivity.listlevel_0.size()), Integer.toString(EnigmaGameMenuActivity.listlevel_1.size()));
-			}
+		
 	}
+	
+	public static void generateCurrentCompleteButton(){
+		currentCompleteLevel.removeAll(currentCompleteLevel);
+		for(int i=difficulty*20;i<difficulty*20+20;i++){//to difficulty to pernaw atofio .. k einai iso me 0 arxika
+			currentCompleteLevel.add(listButtons.get(i));
+		}
+		
+	}
+	
 	private void removeFindQuizFromArrayLists(ArrayList <SelectEnigmaButton>array){
 		for(int id:SelectEnigmaButton.foundAnsweresId){
 			for(int i=0;i<array.size();i++){

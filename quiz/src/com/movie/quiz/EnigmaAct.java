@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -36,29 +37,42 @@ public class EnigmaAct extends Activity {
 	private static MediaPlayer player;
 	private static Database database;
 	private boolean isNearToFind = false;
-	
-	public static int correctMustHaveInEachDifficulty = 15;
+	private Button hintButton;
+	private TextView hintText;
+	public static final int startingHints = 10;
+	private boolean isLevelComplete = false;
+	public static int hints = startingHints;
+	public static int correctMustHaveInEachDifficulty = 17;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_enigma);
 		init();
+		database.updateHints();
 
-		inputText.setTextColor(R.color.transparent_white_percent_95);
+		hintText.setText(Integer.toString(hints));
+		inputText.setTextColor(this.getResources().getColor(
+				R.color.transparent_black_percent_10));
 		inputText.setText(startingInputTextString);
 
 		showCurrentLevel.setText("movie No "
 				+ Integer.toString(EnigmaGameMenuActivity.currentStage + 1));
 		// showCurrentLevel.setBackgroundColor(R.color.BlueViolet);
 		playButton.setBackgroundResource(R.drawable.play_button);
-		nextButton.setEnabled(true);
+		// nextButton.setEnabled(true);
 		nextButton.setBackgroundResource(R.drawable.next);
 
 		nextButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				nextEnigma3();
+				hintText.setText(Integer.toString(hints));
+				if (!EnigmaAct.this.getButtonsList().isEmpty()) {
+
+					nextEnigma3();
+				} else {
+					nextOnCompleteEnigma();
+				}
 			}
 		});
 
@@ -67,13 +81,15 @@ public class EnigmaAct extends Activity {
 			public void onClick(View v) {
 				if (button.hasFound()) {
 					inputText.setEnabled(false);
-					inputText.setBackgroundColor(R.color.YellowGreen);
+					inputText.setTextColor(Color.BLACK);
+					inputText.setBackgroundColor(Color.CYAN);
 					inputText.setText(button.getAnswere());
 					return;
 				}
+
 				if (inputText.getText().toString()
 						.equals(startingInputTextString)) {
-					inputText.setTextColor(R.color.black);
+					inputText.setTextColor(Color.BLACK);
 					inputText.setText("");
 				}
 			}
@@ -90,14 +106,42 @@ public class EnigmaAct extends Activity {
 					if (isInputCorrect()) {
 						button.setHasFound(true);
 						foundItFunction();
+						
+						if (database.getCorrectCount() % 5 == 0) {
+							hints++;
+							Toast.makeText(EnigmaAct.this,
+									"Congratulations you earn one Hint",
+									Toast.LENGTH_LONG).show();
+							hintText.setText(Integer.toString(hints));
+							if (isLevelComplete) {
+								EnigmaAct.this.runOnUiThread(new Runnable() {
+									public void run() {
+										try {
+											Thread.sleep(1000);
+										} catch (InterruptedException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+										EnigmaAct.this
+												.startActivity(new Intent(
+														EnigmaAct.this,
+														EnigmaGameMenuActivity.class));
+									}
+								});
+								isLevelComplete = false;
+							}
+
+						}
 						Toast.makeText(EnigmaAct.this, "Correct, you found it",
 								Toast.LENGTH_LONG).show();
+
 					} else if (!isNearToFind) {
 						Toast.makeText(EnigmaAct.this, "incorrect ,try again",
 								Toast.LENGTH_SHORT).show();
 					} else if (isNearToFind) {
 						isNearToFind = false;
 					}
+
 					return true;
 				}
 				return false;
@@ -111,64 +155,108 @@ public class EnigmaAct extends Activity {
 
 			}
 		});
-		if (button != null
-				&& button.hasFound()
-				|| button != null
+		if ((button != null && button.hasFound() || button != null
 				&& SelectEnigmaButton.foundAnsweresId.contains(button
-						.getLevel())) {
+						.getLevel()))
+				&& !getButtonsList().isEmpty()) {// itan xwris to
+			// &&!getButtonsList().isEmpty()
 			foundItFunction();
-			Toast.makeText(EnigmaAct.this, "You have found it",
-					Toast.LENGTH_LONG).show();
-		}
-		
-		
-		
-		ArrayList <SelectEnigmaButton> array=null;
-		if(EnigmaGameMenuActivity.difficulty==0){
-			array=EnigmaGameMenuActivity.listlevel_0;
-		}else if(EnigmaGameMenuActivity.difficulty==1){
-			array=EnigmaGameMenuActivity.listlevel_1;
-		}else if(EnigmaGameMenuActivity.difficulty==2){
-			array=EnigmaGameMenuActivity.listlevel_2;
-		}else if(EnigmaGameMenuActivity.difficulty==3){
-			array=EnigmaGameMenuActivity.listlevel_3;
-		}else if(EnigmaGameMenuActivity.difficulty==4){
-			array=EnigmaGameMenuActivity.listlevel_4;
-		}
-		if(array.isEmpty()){
-			nextButton.setEnabled(false);
-		}
-		Toast.makeText(this, "Congratulations you complete the level ", Toast.LENGTH_LONG);
-		
+			// Toast.makeText(EnigmaAct.this,
+			// "You have found it",Toast.LENGTH_LONG).show();
+		} else if (getButtonsList().isEmpty()) {//
+			foundItFunctionOnLevelComplete();// nea function
+		}//
+		hintButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if (button.hasFound()) {
+					Toast.makeText(EnigmaAct.this, "You have already found it",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if (hints - 3 < 0) {
+					Toast.makeText(EnigmaAct.this, "You have not enough hints",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if (database.getCorrectCount() % 5 == 0) {
+					Toast.makeText(EnigmaAct.this,
+							"Congratulations you earn one Hint",
+							Toast.LENGTH_SHORT).show();
+					hintText.setText(Integer.toString(hints));
+					hints++;
+				}
+				hints -= 3;
+				// button.setHasFound(true);
+				foundItFunction();
+				hintText.setText(Integer.toString(hints));
+			}
+
+		});
+
+		ArrayList<SelectEnigmaButton> array = getButtonsList();
+
+	}
+
+	private void foundItFunctionOnLevelComplete() {
+		inputText.setBackgroundColor(Color.YELLOW);
+		inputText.setTextColor(Color.BLACK);
+		inputText.setEnabled(false);
+		inputText.setText(button.getAnswere());
 	}
 
 	private void foundItFunction() {
-		inputText.setBackgroundColor(R.color.YellowGreen);
+		inputText.setBackgroundColor(Color.YELLOW);
+		inputText.setTextColor(Color.BLACK);
 		inputText.setEnabled(false);
 		inputText.setText(button.getAnswere());
-		EnigmaGameMenuActivity.listlevel_0.remove(button);
-		EnigmaGameMenuActivity.listlevel_1.remove(button);
-		EnigmaGameMenuActivity.listlevel_2.remove(button);
-		EnigmaGameMenuActivity.listlevel_3.remove(button);
-		EnigmaGameMenuActivity.listlevel_4.remove(button);
-		database.addContact(button.getLevel());
 		
-		ArrayList <SelectEnigmaButton> array=null;
-		if(EnigmaGameMenuActivity.difficulty==0){
-			array=EnigmaGameMenuActivity.listlevel_0;
-		}else if(EnigmaGameMenuActivity.difficulty==1){
-			array=EnigmaGameMenuActivity.listlevel_1;
-		}else if(EnigmaGameMenuActivity.difficulty==2){
-			array=EnigmaGameMenuActivity.listlevel_2;
-		}else if(EnigmaGameMenuActivity.difficulty==3){
-			array=EnigmaGameMenuActivity.listlevel_3;
-		}else if(EnigmaGameMenuActivity.difficulty==4){
-			array=EnigmaGameMenuActivity.listlevel_4;
+		hideSoftKeyboard(EnigmaAct.this);
+		// EnigmaGameMenuActivity.listlevel_0.remove(button);
+		// EnigmaGameMenuActivity.listlevel_1.remove(button);
+		// EnigmaGameMenuActivity.listlevel_2.remove(button);
+		// EnigmaGameMenuActivity.listlevel_3.remove(button);
+		// EnigmaGameMenuActivity.listlevel_4.remove(button);
+		database.addContact(button.getLevel(), hints);
+
+		ArrayList<SelectEnigmaButton> array = getButtonsList();
+
+		array.remove(button);
+		if (array.isEmpty()) {
+			// nextButton.setEnabled(false);
+			hints += 10;
+			Toast.makeText(EnigmaAct.this,
+					"You complete the level , you earn 10 hints",
+					Toast.LENGTH_SHORT);
+			try {
+				playSound("clp");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			isLevelComplete = true;
+			Toast.makeText(EnigmaAct.this,
+					"Congratulations you complete the level ",
+					Toast.LENGTH_LONG);
+
 		}
-		if(array.isEmpty()){
-			nextButton.setEnabled(false);
+	}
+
+	private ArrayList<SelectEnigmaButton> getButtonsList() {
+		ArrayList<SelectEnigmaButton> array = null;
+		if (EnigmaGameMenuActivity.difficulty == 0) {
+			array = EnigmaGameMenuActivity.listlevel_0;
+		} else if (EnigmaGameMenuActivity.difficulty == 1) {
+			array = EnigmaGameMenuActivity.listlevel_1;
+		} else if (EnigmaGameMenuActivity.difficulty == 2) {
+			array = EnigmaGameMenuActivity.listlevel_2;
+		} else if (EnigmaGameMenuActivity.difficulty == 3) {
+			array = EnigmaGameMenuActivity.listlevel_3;
+		} else if (EnigmaGameMenuActivity.difficulty == 4) {
+			array = EnigmaGameMenuActivity.listlevel_4;
 		}
-		
+
+		return array;
 	}
 
 	/**
@@ -186,13 +274,24 @@ public class EnigmaAct extends Activity {
 			return true;
 		}
 		String text = inputText.getText().toString();
+		text = text.toLowerCase();// ////////
 		ArrayList<Character> listInput = new ArrayList<Character>();
 		ArrayList<Character> listAnswere = new ArrayList<Character>();
 		for (int i = 0; i < text.length(); i++) {
 			listInput.add((char) text.indexOf(i));
 		}
-		for (int i = 0; i < button.getAnswere().length(); i++) {
-			listAnswere.add((char) button.getAnswere().indexOf(i));
+
+		String answere = button.getAnswere();
+		answere = answere.toLowerCase();// //////
+		for (int i = 0; i < answere.length(); i++) {
+			listAnswere.add((char) answere.indexOf(i));
+		}
+
+		int differenceBetweenAnswereAndInput = listAnswere.size()
+				- listInput.size();
+		if (differenceBetweenAnswereAndInput >= 4
+				|| differenceBetweenAnswereAndInput <= -4) {
+			return false;
 		}
 
 		int inputSize = listInput.size();
@@ -259,39 +358,125 @@ public class EnigmaAct extends Activity {
 		if (!listOfMusic.isEmpty() && !listOfAnswere.isEmpty()) {
 			return;
 		}
-		addToList("amelie", "amelie");
-		addToList("being_john_malkovich", "being john malkovich");
-		addToList("donnie_darko", "donnie darko");
-		addToList("happy_days", "happy days");
-		addToList("la_vida_es_bella", "la vida es bella");
-		addToList("super_mario", "super mario");
-		addToList("the_island", "the island");
-		addToList("X Files", "X Files");
-		addToList("The Exorcist", "The Exorcist");
-		addToList("Inspector gudget", "Inspector gudget");
+		// ///prwti lista
+		addToList("X Files", "X-Files");
 		addToList("Gostbusters", "Gostbusters");
+		addToList("The Exorcist", "The Exorcist");
+		addToList("Godfather", "The Godfather");
+		addToList("Requiem for a Dream", "Requiem for a Dream");
+		addToList("happy_days", "Happy Days");
+		addToList("Inspector gudget", "Inspector gudget");
+		addToList("Teenage Mutant Ninja Turtles",
+				"Teenage Mutant Ninja Turtles");
+		addToList("super_mario", "Super Mario");
 		addToList("James Bond", "James Bond");
 		addToList("Mission Impossible", "Mission Impossible");
-		addToList("Requiem for a Dream", "Requiem for a Dream");
-		addToList("Godfather", "Godfather");
-		addToList("beverly hills", "beverly hills");
-		addToList("the good the bad and the ugly",
-				"the good the bad and the ugly");
-		addToList("Psycho", "Psycho");
+
+		addToList("beverly hills", "Beverly Hills");
+		addToList("benny hill", "Benny Hill");
+		addToList("amelie", "Amelie");
+		addToList("la_vida_es_bella", "La vida es bella");
+		addToList("the_island", "The Beach");
+		addToList("Batman", "Batman");
+		addToList("donnie_darko", "Donnie Darko");
+		addToList("knight rider", "Knight Rider");
+		addToList("The Pink Panther", "The Pink Panther");
+
+		// //// prwti lista
+		// /// deyteri lista
+		addToList("Toy Story", "Toy Story");
+		addToList("Lion King", "Lion King");
+		addToList("DuckTales", "DuckTales");
+		addToList("Spiderman ", "Spiderman ");
+		addToList("Aladdin", "Aladdin");
+		addToList("Asterix Obelix", "Asterix Obelix");
+		addToList("The Smurfs", "The Smurfs");
+		addToList("baywatch", "Baywatch");
+		addToList("Titanic", "Titanic");
+		addToList("Pulp Fiction", "Pulp Fiction");
+		addToList("X-MEN", "X-MEN");
 		addToList("Rocky", "Rocky");
-		addToList("Rambo", "Rambo");
+		addToList("8 miles", "8 Miles");
+		addToList("Braveheart", "Braveheart");
+		addToList("The Lord of the Rings", "The Lord of the Rings");
+		addToList("the good the bad and the ugly",
+				"The good the bad and the ugly");
+		addToList("Psycho", "Psycho");
+		addToList("Fight Club", "Fight Club");
+		addToList("Harry Potter", "Harry Potter");
+		addToList("Loser", "Loser");
+
+		// //// defteri lista
+		// //// triti lista
+		addToList("A Night at the Roxbury", "A Night at the Roxbury");
+		addToList("Pretty Woman", "Pretty Woman");
+		addToList("Grease", "Grease");
+		addToList("Top Gun", "Top Gun");
+		addToList("Armagedon", "Armagedon");
+		addToList("Zorro", "Zorro");
 		addToList("Last Of The Mohicans", "Last Of The Mohicans");
-		addToList("Romeo and Juliet", "Romeo and Juliet");
-		addToList("Mortal Kombat ", "Mortal Kombat ");
-		addToList("matrix", "matrix");
+		addToList("matrix", "Matrix");
+		addToList("Pirates Of Caribbean", "Pirates Of Caribbean");
+		addToList("2001 a space odyssey", "2001 a space odyssey");
+		addToList("Rambo", "Rambo");
+		addToList("The Phantom Of The Opera", "The Phantom Of The Opera");
+		addToList("The Simpsons", "The Simpsons");
+		addToList("Indiana Johnes", "Indiana Johnes");
+		addToList("The Addams Family", "The Addams Family");
+		addToList("Bewitched", "Bewitched");
+		addToList("Mortal Kombat", "Mortal Kombat");
+		addToList("dangerous minds", "Dangerous minds");
+		addToList("Footloose", "Footloose");
+		addToList("Eurotrip", "Eurotrip");
+		// // trith lista
+		// // tetarti lista
+		
+		addToList("Scent of A Woman", "Scent of A Woman");
+		addToList("Sherlock Holmes", "Sherlock Holmes");
+		addToList("Flashdance", "Flashdance");
+		addToList("The Killing Fields", "The Killing Fields");
+		addToList("A NIGHT IN HEAVEN", "A night in heaven");
+		addToList("The Bourne Identity", "The Bourne Identity");
 		addToList("Eyes Wide Shut", "Eyes Wide Shut");
-		/*
-		 * addToList("", ""); addToList("", ""); addToList("", "");
-		 * addToList("", ""); addToList("", ""); addToList("", "");
-		 * addToList("", ""); addToList("", ""); addToList("", "");
-		 * addToList("", ""); addToList("", ""); addToList("", "");
-		 * addToList("", "");
-		 */
+		addToList("Romeo and Juliet", "Romeo and Juliet");
+		addToList("Twisted nerve", "Twisted nerve");
+		addToList("star wars", "Star wars");
+		addToList("being_john_malkovich", "Being john malkovich");
+		addToList("Up", "Up");
+		addToList("Gladiator", "Gladiator");
+		addToList("The Bridge on the River Kwai",
+				"The Bridge on the River Kwai");
+		addToList("The Great Escape", "The Great Escape");
+		addToList("Hawaii 5-O", "Hawaii 5-O");
+		addToList("Layer Cake", "Layer Cake");
+		addToList("Robocop ", "Robocop ");
+		addToList("The mission", "The mission");
+		addToList("North by Northwest", "North by Northwest");
+
+		// /// tetarti lista
+		// /// pempti lista
+		addToList("Jackass", "Jackass");
+		addToList("Austin Power", "Austin Power");
+		addToList("Kill Bill", "Kill Bill");
+		addToList("300", "300");
+		addToList("American Beauty", "American Beauty");
+		addToList("Platoon", "Platoon");
+		addToList("Beverly Hills Cop", "Beverly Hills Cop");
+		addToList("Apocalypse Now", "Apocalypse Now");
+		addToList("Fountain", "Fountain");
+		addToList("Halloween", "Halloween");
+		addToList("Superman", "Superman");
+		addToList("Forrest Gump", "Forrest Gump");
+		addToList("The Piano", "The Piano");
+		addToList("Ben Hur", "Ben Hur");
+		addToList("A Summer Place", "A Summer Place");
+		addToList("The Magnificent Seven", "The Magnificent Seven");
+		addToList("CHARIOTS of FIRE", "Chariots of Fire");
+		addToList("Alfred Hitchcock Presents", "Alfred Hitchcock Presents");
+		addToList("Edward Scissorhand", "Edward Scissorhand");
+		addToList("Lawrence of Arabia", "Lawrence of Arabia");
+		// /// pempti lista
+
 	}
 
 	/**
@@ -326,16 +511,30 @@ public class EnigmaAct extends Activity {
 	}
 
 	private void stopMusic() {
-		if (mPlayer != null) {
-			// mPlayer.stop();
-			playSound(-1);
-		}
-		if (player != null) {
-			// mPlayer.stop();
-			player.stop();
+		try {
+			if (mPlayer != null) {
+				// mPlayer.stop();
+				playSound(-1);
+			}
+			if (player != null) {
+				// mPlayer.stop();
+
+				player.stop();
+
+			}
+		} catch (Exception e) {
+
 		}
 
 	}
+	public static void hideSoftKeyboard(Activity activity) {
+		try{
+	    InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+	    inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+	}catch(Exception e){
+		// no needed but want to be sure 
+	}
+		}
 
 	/**
 	 * 
@@ -412,6 +611,8 @@ public class EnigmaAct extends Activity {
 		playButton = (Button) findViewById(R.id.play_sound_button);
 		inputText = (EditText) findViewById(R.id.input_text);
 		inputView = (TextView) findViewById(R.id.preview_stage);
+		hintButton = (Button) findViewById(R.id.hint_button);
+		hintText = (TextView) findViewById(R.id.hinttext);
 		listOfMusic = new ArrayList();
 		listOfAnswere = new ArrayList();
 		database = new Database(this);
@@ -438,61 +639,101 @@ public class EnigmaAct extends Activity {
 
 	}
 
-	private void goAtStart(){
+	private void goAtStart() {
 		EnigmaGameMenuActivity.currentStage = 1;
 		setButton(EnigmaGameMenuActivity.listButtons.get(0));
-			nextStage();
-			
+		nextStage();
+
 	}
-	
+
 	private void nextEnigma2() {
 		stopMusic();
 		if (button.canNotUseNext()) {
-			//if(SelectDifficultyButton.foundCorrect*(EnigmaGameMenuActivity.difficulty+1)<(EnigmaGameMenuActivity.difficulty+1)*1){
-			if(!button.useNext2()){	
+			// if(SelectDifficultyButton.foundCorrect*(EnigmaGameMenuActivity.difficulty+1)<(EnigmaGameMenuActivity.difficulty+1)*1){
+			if (!button.useNext2()) {
 				goAtStart();
 				return;
 			}
-			
+
 		}
 
 		EnigmaGameMenuActivity.currentStage++;
 		nextStage();
 	}
-	
+
+	private void nextOnCompleteEnigma() {
+		stopMusic();
+
+		EnigmaGameMenuActivity.generateCurrentCompleteButton();
+		SelectEnigmaButton newButton = getNextButtonWhenIsFound(
+				button.getLevel(), EnigmaGameMenuActivity.currentCompleteLevel);
+		if (newButton == null) {
+			newButton = getNextButtonWhenIsFound(-1,
+					EnigmaGameMenuActivity.currentCompleteLevel);
+		}
+		setButton(newButton);
+		EnigmaGameMenuActivity.currentStage = button.getLevel();
+		startActivity(new Intent(EnigmaAct.this, EnigmaAct.class));
+	}
+
 	private void nextEnigma3() {
 		stopMusic();
-			 goToNextButton(EnigmaGameMenuActivity.difficulty);
-		
+		goToNextButton(EnigmaGameMenuActivity.difficulty);
+
 	}
+
 	/**
 	 * 
 	 * @param df
 	 */
-	private void goToNextButton(int df){
-		ArrayList <SelectEnigmaButton> array=null;
-		if(df==0){
-			array=EnigmaGameMenuActivity.listlevel_0;
-		}else if(df==1){
-			array=EnigmaGameMenuActivity.listlevel_1;
-		}else if(df==2){
-			array=EnigmaGameMenuActivity.listlevel_2;
-		}else if(df==3){
-			array=EnigmaGameMenuActivity.listlevel_3;
-		}else if(df==4){
-			array=EnigmaGameMenuActivity.listlevel_4;
+	private void goToNextButton(int df) {
+		ArrayList<SelectEnigmaButton> array = null;
+		if (df == 0) {
+			array = EnigmaGameMenuActivity.listlevel_0;
+		} else if (df == 1) {
+			array = EnigmaGameMenuActivity.listlevel_1;
+		} else if (df == 2) {
+			array = EnigmaGameMenuActivity.listlevel_2;
+		} else if (df == 3) {
+			array = EnigmaGameMenuActivity.listlevel_3;
+		} else if (df == 4) {
+			array = EnigmaGameMenuActivity.listlevel_4;
 		}
-		for(int i=0;i<array.size();i++){
-			if(array.get(i).getLevel()==button.getLevel()&&i<array.size()-1){
-				setButton(array.get(i+1));
+
+		SelectEnigmaButton newButton = getNextButtonWhenIsFound(
+				button.getLevel(), array);
+		if (newButton == null) {
+			newButton = getNextButtonWhenIsFound(-1, array);
+		}
+
+		setButton(newButton);
+		/*
+		 * for(int i=0;i<array.size();i++){
+		 * 
+		 * if(array.get(i).getLevel()==button.getLevel()){
+		 * if((i+1)>array.size()){
+		 * 
+		 * } setButton(array.get(i+1)); break; } }
+		 */
+		EnigmaGameMenuActivity.currentStage = button.getLevel();
+		startActivity(new Intent(EnigmaAct.this, EnigmaAct.class));
+	}
+
+	public SelectEnigmaButton getNextButtonWhenIsFound(int current_id,
+			ArrayList<SelectEnigmaButton> array) {
+		int returning_id = -1;
+		for (int i = 0; i < array.size(); i++) {
+
+			if (array.get(i).getLevel() > current_id) {
+				returning_id = i;
 				break;
-			}else if(i>=array.size()-1){
-				setButton(array.get(0));
-				i=0;
 			}
 		}
-		EnigmaGameMenuActivity.currentStage=button.getLevel();
-		startActivity(new Intent(EnigmaAct.this, EnigmaAct.class));
+		if (returning_id == -1) {
+			return null;
+		}
+		return array.get(returning_id);
+
 	}
 
 	/**
@@ -501,10 +742,11 @@ public class EnigmaAct extends Activity {
 	private void nextStage() {
 		int x = 1;
 
-		while (SelectEnigmaButton.foundAnsweresId.contains(button.getLevel()+ x)) {
+		while (SelectEnigmaButton.foundAnsweresId.contains(button.getLevel()
+				+ x)) {
 			x++;
 			EnigmaGameMenuActivity.currentStage++;
-			
+
 		}
 		setButton(EnigmaGameMenuActivity.listButtons.get(button.getLevel() + x));
 		startActivity(new Intent(EnigmaAct.this, EnigmaAct.class));
@@ -535,4 +777,36 @@ public class EnigmaAct extends Activity {
 		stopMusic();
 		return;
 	}
+
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_HOME) {
+
+			// gotoHomeScreen();
+			stopMusic();
+			// return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	protected void onDestroy() {
+
+		try {
+			player.release();
+		} catch (Exception e) {
+
+		} finally {
+			super.onDestroy();
+		}
+
+	}
+
+	private void gotoHomeScreen() {
+
+		Intent startMain = new Intent(Intent.ACTION_MAIN);
+		startMain.addCategory(Intent.CATEGORY_HOME);
+		startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(startMain);
+	}
+
 }
