@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="game.tsoglani.soundtrack.soundtrackgame">
+    package="game.tsoglanakos.com.soundtrackgame">
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature android:name="android.hardware.screen.portrait" />
@@ -9,7 +9,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MovieQuiz"
+            android:name="game.tsoglanakos.com.soundtrackgame.MovieQuiz"
             android:label="@string/title_activity_movie_quiz"
             android:noHistory="true"
             android:screenOrientation="portrait" >
@@ -20,20 +20,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainGameMenuActivity"
+            android:name="game.tsoglanakos.com.soundtrackgame.MainGameMenuActivity"
             android:label="@string/title_activity_game_menu"
             android:noHistory="true"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".EnigmaGameMenuActivity"
+            android:name="game.tsoglanakos.com.soundtrackgame.EnigmaGameMenuActivity"
             android:label="@string/title_activity_game"
             android:noHistory="true"
             android:screenOrientation="portrait" >
         </activity>
 
         <activity
-            android:name=".EnigmaAct"
+            android:name="game.tsoglanakos.com.soundtrackgame.EnigmaAct"
             android:label="@string/title_activity_enigma"
             android:noHistory="true"
             android:screenOrientation="portrait" >

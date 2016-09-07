@@ -1,10 +1,8 @@
-package game.tsoglani.soundtrack.soundtrackgame;
+package game.tsoglanakos.com.soundtrackgame;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 public class GameMenuView extends ViewGroup{
 

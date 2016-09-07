@@ -1,12 +1,10 @@
-package game.tsoglani.soundtrack.soundtrackgame;
+package game.tsoglanakos.com.soundtrackgame;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;

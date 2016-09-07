@@ -1,4 +1,4 @@
-package game.tsoglani.soundtrack.soundtrackgame;
+package game.tsoglanakos.com.soundtrackgame;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

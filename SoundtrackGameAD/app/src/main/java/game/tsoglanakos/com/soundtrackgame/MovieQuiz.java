@@ -1,4 +1,4 @@
-package game.tsoglani.soundtrack.soundtrackgame;
+package game.tsoglanakos.com.soundtrackgame;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -10,13 +10,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
-import android.graphics.Color;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MovieQuiz extends Activity {

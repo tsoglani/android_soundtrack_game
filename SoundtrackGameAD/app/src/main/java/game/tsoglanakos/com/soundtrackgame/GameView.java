@@ -1,11 +1,10 @@
-package game.tsoglani.soundtrack.soundtrackgame;
+package game.tsoglanakos.com.soundtrackgame;
 
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 public class GameView extends ViewGroup {
 	private SelectDifficultyButton[] level = new SelectDifficultyButton[5];

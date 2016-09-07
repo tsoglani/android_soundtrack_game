@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.0"
 
     defaultConfig {
-        applicationId "game.tsoglani.soundtrack.soundtrackgame"
+        applicationId "game.tsoglanakos.soundtrackgame"
         minSdkVersion 13
         targetSdkVersion 24
         versionCode 1
